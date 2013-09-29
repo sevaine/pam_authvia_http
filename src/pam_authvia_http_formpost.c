@@ -110,4 +110,30 @@ pam_sm_authenticate( pam_handle_t *pamh, int flags,i int argc, const char *argv[
   strcpy( post_params, "?auth_key=" );
   strcpy( post_params, auth_key );
 
-
+  CURL *curl;
+  CURLcode res;
+  
+  curl_global_init(CURL_GLOBAL_ALL);
+  curl = curl_easy_init();
+  if ( curl ) {
+    curl_easy_setopt(curl, CURLOPT_URL, base_url);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_params);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, strlen(post_params));
+    res = curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+  }
+  if ( res != CURLE_OK )
+  {
+    pam_err = PAM_AUTH_ERROR;
+  }
+  else
+  {
+    pam_err = PAM_SUCCESS;
+  }
+#ifndef _OPENPAM
+  free(password);
+  free(post_params);
+#endif
+  curl_global_cleanup();
+  return (pam_err);
+}
