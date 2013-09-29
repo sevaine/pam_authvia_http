@@ -18,19 +18,6 @@ PAM_EXTERN = int pam_sm_setcred( pam_handle_t *pamh, int flags, int argc, const 
   return PAM_SUCCESS;
 }
 
-/* From pam_unix/support.c - allows us to perform I/O */
-int converse( pam_handle_t *pamh, int nargs, struct pam_message **message, struct pam_response **response ) {
-  int retval;
-  struct pam_conv *conv;
-
-  retval = pam_get_item( pamh, PAM_CONV, (const void **) &conv );
-  if( retval==PAM_SUCCESS ) {
-    retval = conv->conv( nargs, (const struct pam_message **) message, response, conv->appdata_ptr );
-  }
-
-  return retval;
-}
-
 /* expected hook for our custom actions */
 PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, const char **argv ) {
   int retval;
@@ -43,21 +30,20 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
 
   ./* parameters */
   int got_base_url = 0;
-  int got_code_size = 0;
-  unsigned int code_size = 0;
+  int got_api_key = 0;
   char base_url[256];
+  char api_key[256];
   for( i=0 ; i<argc ; i++ ) {
     if( strncmp(argv[i], "base_url=", 9)==0 ) {
       strncpy( base_url, argv[i]+9, 256 ) ;
       got_base_url = 1 ;
-    } else if( strncmp(argv[i], "code_size=", 10)==0 ) {
-      char temp[256];
-      strncpy( temp, argv[i]+10, 256 ) ;
-      code_size = atoi( temp ) ;
-      got_code_size = 1 ;
+    } else if( strncmp(argv[i], "api_key=", 8)==0 ) {
+      strncpy( temp, argv[i]+8, 256 ) ;
+      api_key = atoi( temp ) ;
+      got_api_key = 1 ;
     }
   }
-  if( got_base_url==0 || got_code_size==0 ) {
+  if( got_base_url==0 || got_api_key==0 ) {
     return PAM_AUTH_ERR;
   }
 
