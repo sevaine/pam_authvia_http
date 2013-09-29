@@ -38,8 +38,7 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
       strncpy( base_url, argv[i]+9, 256 ) ;
       got_base_url = 1 ;
     } else if( strncmp(argv[i], "api_key=", 8)==0 ) {
-      strncpy( temp, argv[i]+8, 256 ) ;
-      api_key = atoi( temp ) ;
+      strncpy( api_key, argv[i]+8, 256 ) ;
       got_api_key = 1 ;
     }
   }
@@ -54,14 +53,14 @@ PAM_EXTERN int pam_sm_authenticate( pam_handle_t *pamh, int flags,int argc, cons
   }
         
   /* Build the url */
-  char url_with_params[ strlen(base_url) + strlen("?username=") + strlen("?password=") + strlen(password) + strlen("?auth_key=") + strlen(auth_key) + strlen("?ip=") + strlen(ip) ];
-  strcpy( url_with_params, base_url );
-  strcpy( url_with_params, "?username=" );
-  strcpy( url_with_params, username );
-  strcpy( url_with_params, "?password=" );
-  strcpy( url_with_params, password );
-  strcpy( url_with_params, "?auth_key=" );
-  strcpy( url_with_params, auth_key );
-  strcpy( url_with_params, "?ip=" );
-  strcpy( url_with_params, ip );
+  char post_params[ strlen("username=") + strlen("?password=") + strlen(password) + strlen("?auth_key=") + strlen(auth_key) + strlen("?ip=") + strlen(ip) ];
+  strcpy( post_params, base_url );
+  strcpy( post_params, "?username=" );
+  strcpy( post_params, username );
+  strcpy( post_params, "?password=" );
+  strcpy( post_params, password );
+  strcpy( post_params, "?auth_key=" );
+  strcpy( post_params, auth_key );
+  strcpy( post_params, "?ip=" );
+  strcpy( post_params, ip );
 
