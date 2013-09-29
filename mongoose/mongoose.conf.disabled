@@ -1,0 +1,17 @@
+# Error log
+e error.log
+
+# Ports
+p 8080
+
+# Root dir
+r data
+
+# Default Doc
+# i index.htm,index.html
+
+# Mime types
+#m .manifest=text/cache-manifest,.asp=text/html
+
+# CGI File extensions
+c .cgi
